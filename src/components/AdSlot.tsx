@@ -1,0 +1,2 @@
+import React,{useEffect,useState} from 'react';import {getEntitlement} from '../services/entitlements';
+export function AdSlot({placement}:{placement:string}){const [show,setShow]=useState(false);useEffect(()=>{void getEntitlement().then(e=>setShow(Boolean(e&&e.plan==='trial'&&import.meta.env.VITE_AD_PROVIDER_ID)))},[]);if(!show)return null;return <aside data-ad-placement={placement} className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-center text-[10px] text-slate-400" aria-label="Advertisement">Advertisement</aside>}

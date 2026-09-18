@@ -1,0 +1,4 @@
+import { supabase } from '../lib/supabase/client';
+export type JobStatus='queued'|'preparing'|'processing'|'rendering'|'finalizing'|'completed'|'failed'|'cancelled';
+export interface ReportJob { id:string; status:JobStatus; progress:number; processedRows:number; totalRows:number; pages:number; createdAt:string; startedAt:string|null; finishedAt:string|null; error:string|null; artifactId:string|null; }
+export async function createReportJob(manifest:unknown,idempotencyKey:string){const {data:{session}}=await supabase.auth.getSession();if(!session)throw new Error('You are not signed in.');const r=await fetch('/.netlify/functions/report-jobs',{method:'POST',headers:{Authorization:`Bearer ${session.access_token}`,'Content-Type':'application/json','Idempotency-Key':idempotencyKey},body:JSON.stringify({manifest})});const data=await r.json().catch(()=>({}));if(!r.ok)throw new Error(data.error||'The server report pipeline is not configured.');return data as ReportJob;}
